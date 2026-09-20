@@ -1,13 +1,13 @@
 function openTool(toolName) {
-  if (toolName !== "AI Assistant") {
-    alert(
-      toolName +
-      "\n\nИнструмент скоро будет доступен 🚀"
-    );
+  if (toolName === "AI Assistant") {
+    createChat();
     return;
   }
 
-  createChat();
+  alert(
+    toolName +
+    "\n\nЭтот инструмент пока находится в разработке 🚀"
+  );
 }
 
 function createChat() {
@@ -20,119 +20,164 @@ function createChat() {
     <div style="
       position:fixed;
       inset:0;
-      background:rgba(0,0,0,.75);
+      z-index:99999;
+      background:rgba(0,0,0,.8);
       display:flex;
       align-items:center;
       justify-content:center;
-      z-index:9999;
       padding:20px;
+      box-sizing:border-box;
     ">
+
       <div style="
         width:100%;
-        max-width:500px;
-        height:600px;
+        max-width:520px;
+        height:650px;
         background:#111;
-        border:1px solid #333;
+        color:white;
         border-radius:20px;
+        overflow:hidden;
         display:flex;
         flex-direction:column;
-        overflow:hidden;
-        color:white;
+        border:1px solid #333;
+        box-shadow:0 20px 60px rgba(0,0,0,.5);
       ">
+
         <div style="
           padding:18px;
-          border-bottom:1px solid #333;
           display:flex;
-          justify-content:space-between;
           align-items:center;
+          justify-content:space-between;
+          border-bottom:1px solid #333;
         ">
-          <strong>🤖 AI Assistant</strong>
-          <button id="close-chat" style="
-            background:none;
-            border:none;
-            color:white;
-            font-size:24px;
-            cursor:pointer;
-          ">×</button>
+          <div>
+            <strong style="font-size:18px;">
+              🤖 AI Assistant
+            </strong>
+            <div style="
+              color:#888;
+              font-size:12px;
+              margin-top:4px;
+            ">
+              AI Factory
+            </div>
+          </div>
+
+          <button
+            id="close-ai-chat"
+            type="button"
+            style="
+              background:none;
+              border:0;
+              color:white;
+              font-size:28px;
+              cursor:pointer;
+            "
+          >
+            ×
+          </button>
         </div>
 
-        <div id="chat-messages" style="
-          flex:1;
-          padding:15px;
-          overflow-y:auto;
-          font-size:15px;
-        ">
-          <div style="margin-bottom:15px;">
+        <div
+          id="ai-messages"
+          style="
+            flex:1;
+            overflow-y:auto;
+            padding:18px;
+            box-sizing:border-box;
+          "
+        >
+          <div style="
+            background:#222;
+            padding:12px;
+            border-radius:12px;
+            margin-bottom:12px;
+          ">
             🤖 Привет! Я AI Assistant. Чем могу помочь?
           </div>
         </div>
 
         <div style="
-          display:flex;
-          gap:8px;
           padding:12px;
           border-top:1px solid #333;
+          display:flex;
+          gap:8px;
         ">
+
           <input
-            id="chat-input"
+            id="ai-input"
             type="text"
             placeholder="Напиши сообщение..."
+            autocomplete="off"
             style="
               flex:1;
-              padding:12px;
-              border-radius:10px;
+              min-width:0;
+              padding:13px;
+              border-radius:12px;
               border:1px solid #444;
               background:#222;
               color:white;
               outline:none;
+              box-sizing:border-box;
             "
           >
 
-          <button id="send-message" style="
-            padding:12px 16px;
-            border:none;
-            border-radius:10px;
-            background:#fff;
-            color:#000;
-            cursor:pointer;
-          ">➤</button>
+          <button
+            id="ai-send"
+            type="button"
+            style="
+              width:50px;
+              border:0;
+              border-radius:12px;
+              background:white;
+              color:black;
+              font-size:20px;
+              cursor:pointer;
+            "
+          >
+            ➤
+          </button>
+
         </div>
+
       </div>
     </div>
   `;
 
   document.body.appendChild(chat);
 
-  document.getElementById("close-chat").onclick = () => {
-    chat.remove();
-  };
+  const closeButton = document.getElementById("close-ai-chat");
+  const input = document.getElementById("ai-input");
+  const sendButton = document.getElementById("ai-send");
+  const messages = document.getElementById("ai-messages");
 
-  const input = document.getElementById("chat-input");
-  const sendButton = document.getElementById("send-message");
-  const messages = document.getElementById("chat-messages");
+  closeButton.addEventListener("click", () => {
+    chat.remove();
+  });
 
   async function sendMessage() {
     const message = input.value.trim();
 
     if (!message) return;
 
-    messages.innerHTML += `
-      <div style="
-        text-align:right;
-        margin-bottom:15px;
-      ">
-        🧑 ${escapeHtml(message)}
-      </div>
-    `;
+    addMessage("🧑 " + escapeHtml(message), true);
 
     input.value = "";
+    input.disabled = true;
+    sendButton.disabled = true;
 
-    messages.innerHTML += `
-      <div id="ai-loading" style="margin-bottom:15px;">
-        🤖 Думаю...
-      </div>
+    const loading = document.createElement("div");
+
+    loading.id = "ai-loading";
+    loading.style.cssText = `
+      background:#222;
+      padding:12px;
+      border-radius:12px;
+      margin-bottom:12px;
     `;
 
+    loading.textContent = "🤖 Думаю...";
+    messages.appendChild(loading);
     messages.scrollTop = messages.scrollHeight;
 
     try {
@@ -148,46 +193,69 @@ function createChat() {
 
       const data = await response.json();
 
-      const loading = document.getElementById("ai-loading");
-      if (loading) loading.remove();
+      loading.remove();
 
       if (!response.ok) {
-        throw new Error(data.error || "Ошибка сервера");
+        throw new Error(
+          data.error || "Ошибка сервера"
+        );
       }
 
-      messages.innerHTML += `
-        <div style="
-          margin-bottom:15px;
-          white-space:pre-wrap;
-        ">
-          🤖 ${escapeHtml(data.reply)}
-        </div>
-      `;
+      addMessage(
+        "🤖 " + escapeHtml(data.reply),
+        false
+      );
 
     } catch (error) {
-      const loading = document.getElementById("ai-loading");
-      if (loading) loading.remove();
 
-      messages.innerHTML += `
-        <div style="
-          color:#ff6b6b;
-          margin-bottom:15px;
-        ">
-          ❌ ${escapeHtml(error.message)}
-        </div>
-      `;
+      loading.remove();
+
+      addMessage(
+        "❌ Ошибка: " + escapeHtml(error.message),
+        false
+      );
+
+    } finally {
+      input.disabled = false;
+      sendButton.disabled = false;
+      input.focus();
     }
+  }
 
+  function addMessage(text, user) {
+    const messageElement = document.createElement("div");
+
+    messageElement.style.cssText = `
+      padding:12px;
+      border-radius:12px;
+      margin-bottom:12px;
+      white-space:pre-wrap;
+      line-height:1.5;
+      ${user
+        ? "background:#333;text-align:right;"
+        : "background:#222;"
+      }
+    `;
+
+    messageElement.innerHTML = text;
+
+    messages.appendChild(messageElement);
     messages.scrollTop = messages.scrollHeight;
   }
 
-  sendButton.onclick = sendMessage;
+  sendButton.addEventListener(
+    "click",
+    sendMessage
+  );
 
-  input.addEventListener("keydown", (event) => {
-    if (event.key === "Enter") {
-      sendMessage();
+  input.addEventListener(
+    "keydown",
+    (event) => {
+      if (event.key === "Enter") {
+        sendMessage();
+      }
     }
-  });
+  );
 
   input.focus();
 }
@@ -198,6 +266,4 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  console.log("AI Factory запущен!");
-});
+console.log("AI Factory app.js загружен");
