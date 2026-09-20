@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Factory — AI инструменты</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="header">
+    <div class="logo">AI<span>Factory</span></div>
+    <nav>
+      <a href="#tools">Инструменты</a>
+      <a href="#about">О нас</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <div class="badge">⚡ AI FACTORY</div>
+        <h1>Создавай больше<br><span>с помощью ИИ</span></h1>
+        <p>
+          AI-инструменты для текста, изображений, идей,
+          бизнеса и автоматизации — всё в одном месте.
+        </p>
+
+        <div class="buttons">
+          <a href="#tools" class="btn primary">Попробовать бесплатно</a>
+          <a href="#about" class="btn secondary">Узнать больше</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="tools" class="tools">
+      <h2>AI-инструменты</h2>
+      <p class="section-text">Выбери инструмент и начни создавать</p>
+
+      <div class="cards">
+        <div class="card">
+          <div class="icon">✍️</div>
+          <h3>AI Writer</h3>
+          <p>Создание текстов, постов, описаний и рекламных материалов.</p>
+          <button onclick="openTool('AI Writer')">Открыть</button>
+        </div>
+
+        <div class="card">
+          <div class="icon">🎨</div>
+          <h3>AI Image</h3>
+          <p>Генерация креативных изображений по твоему описанию.</p>
+          <button onclick="openTool('AI Image')">Открыть</button>
+        </div>
+
+        <div class="card">
+          <div class="icon">💡</div>
+          <h3>AI Ideas</h3>
+          <p>Генерация идей для бизнеса, контента и новых проектов.</p>
+          <button onclick="openTool('AI Ideas')">Открыть</button>
+        </div>
+
+        <div class="card">
+          <div class="icon">🤖</div>
+          <h3>AI Assistant</h3>
+          <p>Умный помощник для работы, учёбы и повседневных задач.</p>
+          <button onclick="openTool('AI Assistant')">Открыть</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="about">
+      <h2>AI Factory</h2>
+      <p>
+        Единая платформа, которая объединяет современные
+        инструменты искусственного интеллекта в одном удобном месте.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2026 AI Factory. Все права защищены.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
